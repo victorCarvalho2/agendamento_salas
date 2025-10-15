@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Reservas - FIRJAN SENAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #003d82 0%, #0056b3 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 61, 130, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .logo-text span {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-nav {
+            padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-nav:hover {
+            background: white;
+            color: #003d82;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-login {
+            background: white;
+            color: #003d82;
+        }
+
+        .btn-login:hover {
+            background: #003d82;
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #0056b3 0%, #003d82 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="rgba(255,255,255,0.05)" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,138.7C960,139,1056,117,1152,101.3C1248,85,1344,75,1392,69.3L1440,64L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>') no-repeat bottom;
+            background-size: cover;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h2 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s;
+        }
+
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            animation: fadeInUp 1s;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-hero {
+            padding: 18px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: white;
+            color: #003d82;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: white;
+            color: #003d82;
+        }
+
+        /* Container principal */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        /* Seção de informações */
+        .info-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            text-align: center;
+            color: #003d82;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 50px;
+        }
+
+        /* Grid de cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .card {
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+            transition: all 0.3s;
+            border-top: 4px solid #0056b3;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 61, 130, 0.2);
+        }
+
+        .card-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #003d82;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .card p {
+            color: #555;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+
+        /* Seção de cursos */
+        .cursos-section {
+            background: linear-gradient(135deg, #003d82 0%, #0056b3 100%);
+            color: white;
+            padding: 60px 20px;
+            margin: 60px -20px;
+            border-radius: 20px;
+        }
+
+        .cursos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .curso-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .curso-card:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+            border-color: white;
+        }
+
+        .curso-card h4 {
+            font-size: 1.3em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .curso-card p {
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        /* Estatísticas */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 60px 0;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+            transition: all 0.3s;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 61, 130, 0.2);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Footer */
+        footer {
+            background: #003d82;
+            color: white;
+            padding: 40px 20px;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.8;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .footer-section a:hover {
+            color: white;
+            padding-left: 5px;
+            transition: all 0.3s;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Animações */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 2em;
+            }
+
+            .hero p {
+                font-size: 1.1em;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-menu {
+                justify-content: center;
+            }
+
+            .logo-text h1 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo">🏭</div>
+                <div class="logo-text">
+                    <h1>FIRJAN SENAI</h1>
+                    <span>Sistema de Reservas de Salas</span>
+                </div>
+            </div>
+            <nav class="nav-menu">
+                <a href="#cursos" class="btn-nav">Cursos</a>
+                <a href="#sobre" class="btn-nav">Sobre Nós</a>
+                <a href="#contato" class="btn-nav">Contato</a>
+                <a href="#" class="btn-nav btn-login">🔐 Login</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Transforme seu Futuro Profissional</h2>
+            <p>Acesse o sistema de reservas de salas e organize seus cursos com excelência. FIRJAN SENAI - Educação de qualidade para a indústria brasileira.</p>
+            <div class="hero-buttons">
+                <a href="#" class="btn-hero btn-primary">Acessar Sistema</a>
+                <a href="#cursos" class="btn-hero btn-secondary">Conhecer Cursos</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Seção de Informações -->
+        <section class="info-section">
+            <h2 class="section-title">Por que escolher o FIRJAN SENAI?</h2>
+            <p class="section-subtitle">Referência nacional em educação profissional e tecnológica</p>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">🎓</div>
+                    <h3>Excelência em Ensino</h3>
+                    <p>Somos reconhecidos nacionalmente pela qualidade dos nossos cursos técnicos e de qualificação profissional. Nossa metodologia une teoria e prática, preparando profissionais para os desafios da indústria moderna.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🏭</div>
+                    <h3>Infraestrutura Completa</h3>
+                    <p>Contamos com laboratórios equipados com tecnologia de ponta, oficinas modernas e salas de aula preparadas para oferecer a melhor experiência de aprendizado aos nossos alunos.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">👨‍🏫</div>
+                    <h3>Professores Qualificados</h3>
+                    <p>Nosso corpo docente é formado por profissionais experientes do mercado, com formação técnica e pedagógica, garantindo um ensino alinhado às demandas da indústria.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">💼</div>
+                    <h3>Conexão com o Mercado</h3>
+                    <p>Parcerias com as principais empresas da região garantem oportunidades de estágio, emprego e networking para nossos alunos, facilitando a inserção no mercado de trabalho.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🌟</div>
+                    <h3>Certificação Reconhecida</h3>
+                    <p>Os certificados emitidos pelo SENAI são reconhecidos e valorizados por empresas de todo o Brasil, abrindo portas para uma carreira de sucesso na indústria.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🚀</div>
+                    <h3>Inovação e Tecnologia</h3>
+                    <p>Investimos constantemente em novas tecnologias e metodologias de ensino, incluindo realidade virtual, automação industrial e indústria 4.0, preparando profissionais para o futuro.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Estatísticas -->
+        <section class="stats-section" id="sobre">
+            <div class="stat-box">
+                <div class="stat-number">75+</div>
+                <div class="stat-label">Anos de História</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">200+</div>
+                <div class="stat-label">Cursos Oferecidos</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">50mil+</div>
+                <div class="stat-label">Alunos por Ano</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Empregabilidade</div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Seção de Cursos -->
+    <section class="cursos-section" id="cursos">
+        <div class="container">
+            <h2 class="section-title" style="color: white;">Nossos Cursos em Destaque</h2>
+            <p class="section-subtitle" style="color: rgba(255,255,255,0.9); margin-bottom: 40px;">Formação profissional de excelência em diversas áreas</p>
+
+            <div class="cursos-grid">
+                <div class="curso-card">
+                    <h4>💻 Tecnologia da Informação</h4>
+                    <p>Desenvolvimento de sistemas, redes de computadores, segurança da informação, programação e banco de dados. Prepare-se para atuar na área mais promissora do mercado.</p>
+                </div>
+
+                <div class="curso-card">
+                    <h4>⚙️ Mecânica Industrial</h4>
+                    <p>Manutenção de máquinas, usinagem, soldagem e automação. Torne-se um profissional capacitado para manter a indústria em funcionamento.</p>
+                </div>
+
+                <div class="curso-card">
+                    <h4>⚡ Eletroeletrônica</h4>
+                    <p>Instalações elétricas, eletrônica industrial, comandos elétricos e automação. Domine os sistemas que movimentam a indústria moderna.</p>
+                </div>
+
+                <div class="curso-card">
+                    <h4>🏗️ Edificações</h4>
+                    <p>Construção civil, leitura de projetos, gestão de obras e tecnologia da construção. Construa seu futuro na área que nunca para de crescer.</p>
+                </div>
+
+                <div class="curso-card">
+                    <h4>📊 Administração</h4>
+                    <p>Gestão empresarial, recursos humanos, logística e processos industriais. Lidere equipes e otimize processos nas organizações.</p>
+                </div>
+
+                <div class="curso-card">
+                    <h4>🔬 Química</h4>
+                    <p>Processos químicos industriais, análises laboratoriais e controle de qualidade. Atue no controle de qualidade e desenvolvimento de produtos.</p>
+                </div>
+
+                <div class="curso-card">
+                    <h4>🤖 Automação Industrial</h4>
+                    <p>Robótica, CLP, sistemas SCADA e indústria 4.0. Seja protagonista da revolução tecnológica nas fábricas inteligentes.</p>
+                </div>
+
+                <div class="curso-card">
+                    <h4>🏥 Segurança do Trabalho</h4>
+                    <p>Prevenção de acidentes, normas regulamentadoras e gestão de riscos. Proteja vidas e garanta ambientes de trabalho seguros.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seção adicional -->
+    <div class="container">
+        <section class="info-section">
+            <h2 class="section-title">Sistema de Reservas</h2>
+            <p class="section-subtitle">Organize e gerencie o uso das nossas instalações</p>
+
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-icon">📅</div>
+                    <h3>Reserva de Salas</h3>
+                    <p>Sistema integrado para reserva de salas de aula, laboratórios e auditórios. Visualize disponibilidade em tempo real e faça suas reservas com praticidade.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">👥</div>
+                    <h3>Gestão de Usuários</h3>
+                    <p>Controle de acesso para instrutores, técnicos, inspetores e equipe de manutenção. Cada perfil com suas permissões específicas.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">🎫</div>
+                    <h3>Sistema de Chamados</h3>
+                    <p>Abertura e acompanhamento de chamados de manutenção e emergências. Garanta o funcionamento perfeito de todas as instalações.</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">📊</div>
+                    <h3>Relatórios Gerenciais</h3>
+                    <p>Acompanhe métricas e indicadores de uso das instalações. Relatórios semanais completos para melhor gestão dos recursos.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer id="contato">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>FIRJAN SENAI</h3>
+                <p>O SENAI é referência mundial em educação profissional. Há mais de 75 anos, formamos profissionais qualificados para a indústria brasileira.</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Links Rápidos</h3>
+                <a href="#">Sobre o SENAI</a>
+                <a href="#">Cursos Disponíveis</a>
+                <a href="#">Processo Seletivo</a>
+                <a href="#">Portal do Aluno</a>
+                <a href="#">Trabalhe Conosco</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Áreas de Atuação</h3>
+                <a href="#">Educação Profissional</a>
+                <a href="#">Educação Superior</a>
+                <a href="#">Consultoria Empresarial</a>
+                <a href="#">Certificação</a>
+                <a href="#">Pesquisa e Inovação</a>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contato</h3>
+                <p>📍 Rio de Janeiro - RJ</p>
+                <p>📞 (21) 0800-0231-231</p>
+                <p>📧 contato@firjansenai.com.br</p>
+                <p>🌐 www.firjansenai.com.br</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 FIRJAN SENAI - Sistema de Reservas de Salas. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll para links internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animação ao scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.card, .curso-card, .stat-box').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease-out';
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Instrutor - Sistema de Reservas FIRJAN SENAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #003d82 0%, #0056b3 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 61, 130, 0.3);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .logo-text span {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .user-role {
+            font-size: 0.85em;
+            opacity: 0.9;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 2px 10px;
+            border-radius: 12px;
+            display: inline-block;
+            margin-top: 3px;
+        }
+
+        .btn-logout {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #003d82;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+            margin-bottom: 40px;
+            border-left: 5px solid #0056b3;
+        }
+
+        .welcome-section h2 {
+            color: #003d82;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Estatísticas Rápidas */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+            text-align: center;
+            transition: all 0.3s;
+            border-top: 4px solid #0056b3;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 61, 130, 0.2);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #0056b3;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 1em;
+        }
+
+        /* Grid de ações rápidas */
+        .quick-actions {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .quick-actions h3 {
+            color: #003d82;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .action-btn {
+            padding: 25px;
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: left;
+            box-shadow: 0 4px 15px rgba(25, 118, 210, 0.2);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(25, 118, 210, 0.3);
+        }
+
+        .action-btn-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .action-btn-title {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+
+        .action-btn-desc {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        /* Minhas Reservas */
+        .minhas-reservas {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .minhas-reservas h3 {
+            color: #003d82;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reserva-item {
+            padding: 20px;
+            border-left: 4px solid #42a5f5;
+            background: #e3f2fd;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .reserva-item:hover {
+            background: #bbdefb;
+            border-left-color: #1976d2;
+            transform: translateX(5px);
+        }
+
+        .reserva-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .reserva-sala {
+            font-weight: 600;
+            color: #003d82;
+            font-size: 1.1em;
+        }
+
+        .reserva-status {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-hoje {
+            background: #ffeb3b;
+            color: #f57f17;
+        }
+
+        .status-proxima {
+            background: #e1f5fe;
+            color: #0277bd;
+        }
+
+        .reserva-info {
+            display: flex;
+            gap: 20px;
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .reserva-info span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .reserva-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-editar {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-editar:hover {
+            background: #ffa000;
+        }
+
+        .btn-cancelar {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-cancelar:hover {
+            background: #d32f2f;
+        }
+
+        .btn-detalhes {
+            background: #2196f3;
+            color: white;
+        }
+
+        .btn-detalhes:hover {
+            background: #1976d2;
+        }
+
+        /* Próximas Aulas */
+        .proximas-aulas {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .proximas-aulas h3 {
+            color: #003d82;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .aula-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #e3f2fd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .aula-item:hover {
+            background: #bbdefb;
+            transform: translateX(5px);
+        }
+
+        .aula-horario {
+            background: #1976d2;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 100px;
+            margin-right: 20px;
+        }
+
+        .aula-hora {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .aula-periodo {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
+        .aula-detalhes {
+            flex: 1;
+        }
+
+        .aula-titulo {
+            font-weight: 600;
+            color: #003d82;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .aula-info-extra {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        /* Contatos da Equipe */
+        .contatos-equipe {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .contatos-equipe h3 {
+            color: #003d82;
+            font-size: 1.5em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .contatos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .contato-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 4px solid #1976d2;
+            transition: all 0.3s;
+        }
+
+        .contato-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 61, 130, 0.15);
+            border-left-color: #003d82;
+        }
+
+        .contato-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .contato-avatar {
+            width: 50px;
+            height: 50px;
+            background: #1976d2;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+        }
+
+        .contato-info {
+            flex: 1;
+        }
+
+        .contato-nome {
+            font-weight: 600;
+            color: #003d82;
+            font-size: 1.1em;
+            margin-bottom: 3px;
+        }
+
+        .contato-funcao {
+            font-size: 0.85em;
+            color: #666;
+            background: white;
+            padding: 3px 10px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+
+        .contato-detalhes {
+            margin-top: 15px;
+        }
+
+        .contato-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 0.95em;
+        }
+
+        .contato-item a {
+            color: #1976d2;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .contato-item a:hover {
+            color: #003d82;
+            text-decoration: underline;
+        }
+
+        .btn-contato {
+            width: 100%;
+            padding: 12px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        .btn-contato:hover {
+            background: #003d82;
+            transform: scale(1.02);
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            margin-top: 40px;
+            border-radius: 15px;
+            box-shadow: 0 -2px 10px rgba(0, 61, 130, 0.05);
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-info {
+                flex-direction: column;
+            }
+
+            .logo-text h1 {
+                font-size: 1.5em;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .reserva-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .aula-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .aula-horario {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo">🏭</div>
+                <div class="logo-text">
+                    <h1>FIRJAN SENAI</h1>
+                    <span>Sistema de Reservas</span>
+                </div>
+            </div>
+            <div class="user-info">
+                <div class="user-profile">
+                    <div class="user-avatar">👨‍🏫</div>
+                    <div class="user-details">
+                        <div class="user-name">Prof. Ana Santos</div>
+                        <div class="user-role">🎓 Instrutor(a)</div>
+                    </div>
+                </div>
+                <button class="btn-logout" onclick="logout()">🚪 Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Boas-vindas -->
+        <div class="welcome-section">
+            <h2>Olá, Prof. Ana! 👋</h2>
+            <p>Você tem 3 aulas agendadas para hoje e 2 reservas pendentes esta semana.</p>
+        </div>
+
+        <!-- Estatísticas Rápidas -->
+        <div class="quick-stats">
+            <div class="stat-card">
+                <div class="stat-icon">📚</div>
+                <div class="stat-value">8</div>
+                <div class="stat-label">Aulas esta Semana</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-value">3</div>
+                <div class="stat-label">Aulas Hoje</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏫</div>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Minhas Reservas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-value">14:00</div>
+                <div class="stat-label">Próxima Aula</div>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="quick-actions">
+            <h3>⚡ Ações Rápidas</h3>
+            <div class="actions-grid">
+                <button class="action-btn" onclick="novaReserva()">
+                    <span class="action-btn-icon">➕</span>
+                    <div class="action-btn-title">Nova Reserva</div>
+                    <div class="action-btn-desc">Reserve uma sala para suas aulas</div>
+                </button>
+
+                <button class="action-btn" onclick="verReservas()">
+                    <span class="action-btn-icon">📋</span>
+                    <div class="action-btn-title">Minhas Reservas</div>
+                    <div class="action-btn-desc">Gerencie suas reservas ativas</div>
+                </button>
+
+                <button class="action-btn" onclick="abrirChamado()">
+                    <span class="action-btn-icon">🎫</span>
+                    <div class="action-btn-title">Abrir Chamado</div>
+                    <div class="action-btn-desc">Reportar problemas técnicos</div>
+                </div>
+
+                <button class="action-btn" onclick="verCalendario()">
+                    <span class="action-btn-icon">📆</span>
+                    <div class="action-btn-title">Calendário</div>
+                    <div class="action-btn-desc">Visualizar agenda completa</div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Próximas Aulas Hoje -->
+        <div class="proximas-aulas">
+            <h3>📚 Minhas Aulas de Hoje</h3>
+            
+            <div class="aula-item">
+                <div class="aula-horario">
+                    <div class="aula-hora">08:00</div>
+                    <div class="aula-periodo">08:00 - 10:00</div>
+                </div>
+                <div class="aula-detalhes">
+                    <div class="aula-titulo">Programação Web - Turma A</div>
+                    <div class="aula-info-extra">📍 Laboratório de Informática A | 👥 25 alunos</div>
+                </div>
+            </div>
+
+            <div class="aula-item">
+                <div class="aula-horario">
+                    <div class="aula-hora">14:00</div>
+                    <div class="aula-periodo">14:00 - 16:00</div>
+                </div>
+                <div class="aula-detalhes">
+                    <div class="aula-titulo">Banco de Dados - Turma B</div>
+                    <div class="aula-info-extra">📍 Laboratório de Informática B | 👥 30 alunos</div>
+                </div>
+            </div>
+
+            <div class="aula-item">
+                <div class="aula-horario">
+                    <div class="aula-hora">18:00</div>
+                    <div class="aula-periodo">18:00 - 20:00</div>
+                </div>
+                <div class="aula-detalhes">
+                    <div class="aula-titulo">Desenvolvimento Mobile - Turma C</div>
+                    <div class="aula-info-extra">📍 Sala 103 | 👥 20 alunos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Minhas Reservas Recentes -->
+        <div class="minhas-reservas">
+            <h3>🏫 Minhas Reservas Ativas</h3>
+
+            <div class="reserva-item">
+                <div class="reserva-header">
+                    <div class="reserva-sala">Laboratório de Informática A</div>
+                    <span class="reserva-status status-hoje">🔥 Hoje</span>
+                </div>
+                <div class="reserva-info">
+                    <span>📅 14/10/2025</span>
+                    <span>⏰ 08:00 - 10:00</span>
+                    <span>⏱️ Duração: 2h</span>
+                </div>
+                <div class="reserva-actions">
+                    <button class="btn-small btn-detalhes" onclick="verDetalhes(1)">👁️ Ver Detalhes</button>
+                    <button class="btn-small btn-editar" onclick="editarReserva(1)">✏️ Editar</button>
+                    <button class="btn-small btn-cancelar" onclick="cancelarReserva(1)">❌ Cancelar</button>
+                </div>
+            </div>
+
+            <div class="reserva-item">
+                <div class="reserva-header">
+                    <div class="reserva-sala">Laboratório de Informática B</div>
+                    <span class="reserva-status status-hoje">🔥 Hoje</span>
+                </div>
+                <div class="reserva-info">
+                    <span>📅 14/10/2025</span>
+                    <span>⏰ 14:00 - 16:00</span>
+                    <span>⏱️ Duração: 2h</span>
+                </div>
+                <div class="reserva-actions">
+                    <button class="btn-small btn-detalhes" onclick="verDetalhes(2)">👁️ Ver Detalhes</button>
+                    <button class="btn-small btn-editar" onclick="editarReserva(2)">✏️ Editar</button>
+                    <button class="btn-small btn-cancelar" onclick="cancelarReserva(2)">❌ Cancelar</button>
+                </div>
+            </div>
+
+            <div class="reserva-item">
+                <div class="reserva-header">
+                    <div class="reserva-sala">Sala 103</div>
+                    <span class="reserva-status status-hoje">🔥 Hoje</span>
+                </div>
+                <div class="reserva-info">
+                    <span>📅 14/10/2025</span>
+                    <span>⏰ 18:00 - 20:00</span>
+                    <span>⏱️ Duração: 2h</span>
+                </div>
+                <div class="reserva-actions">
+                    <button class="btn-small btn-detalhes" onclick="verDetalhes(3)">👁️ Ver Detalhes</button>
+                    <button class="btn-small btn-editar" onclick="editarReserva(3)">✏️ Editar</button>
+                    <button class="btn-small btn-cancelar" onclick="cancelarReserva(3)">❌ Cancelar</button>
+                </div>
+            </div>
+
+            <div class="reserva-item">
+                <div class="reserva-header">
+                    <div class="reserva-sala">Laboratório de Informática A</div>
+                    <span class="reserva-status status-proxima">📅 Amanhã</span>
+                </div>
+                <div class="reserva-info">
+                    <span>📅 15/10/2025</span>
+                    <span>⏰ 08:00 - 10:00</span>
+                    <span>⏱️ Duração: 2h</span>
+                </div>
+                <div class="reserva-actions">
+                    <button class="btn-small btn-detalhes" onclick="verDetalhes(4)">👁️ Ver Detalhes</button>
+                    <button class="btn-small btn-editar" onclick="editarReserva(4)">✏️ Editar</button>
+                    <button class="btn-small btn-cancelar" onclick="cancelarReserva(4)">❌ Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contatos da Equipe -->
+        <div class="contatos-equipe">
+            <h3>📞 Contatos da Equipe de Suporte</h3>
+            
+            <div class="contatos-grid">
+                <!-- Técnico -->
+                <div class="contato-card">
+                    <div class="contato-header">
+                        <div class="contato-avatar">🔧</div>
+                        <div class="contato-info">
+                            <div class="contato-nome">João Pedro Oliveira</div>
+                            <span class="contato-funcao">Técnico de TI</span>
+                        </div>
+                    </div>
+                    <div class="contato-detalhes">
+                        <div class="contato-item">
+                            📧 <a href="mailto:joao.oliveira@firjansenai.com.br">joao.oliveira@firjansenai.com.br</a>
+                        </div>
+                        <div class="contato-item">
+                            📱 <a href="tel:+552199999-1111">(21) 99999-1111</a>
+                        </div>
+                        <div class="contato-item">
+                            💬 Ramal: 2145
+                        </div>
+                    </div>
+                    <button class="btn-contato" onclick="entrarEmContato('tecnico', 'João Pedro')">💬 Enviar Mensagem</button>
+                </div>
+
+                <!-- Inspetor -->
+                <div class="contato-card">
+                    <div class="contato-header">
+                        <div class="contato-avatar">👁️</div>
+                        <div class="contato-info">
+                            <div class="contato-nome">Maria Fernanda Costa</div>
+                            <span class="contato-funcao">Inspetora</span>
+                        </div>
+                    </div>
+                    <div class="contato-detalhes">
+                        <div class="contato-item">
+                            📧 <a href="mailto:maria.costa@firjansenai.com.br">maria.costa@firjansenai.com.br</a>
+                        </div>
+                        <div class="contato-item">
+                            📱 <a href="tel:+552199999-2222">(21) 99999-2222</a>
+                        </div>
+                        <div class="contato-item">
+                            💬 Ramal: 2146
+                        </div>
+                    </div>
+                    <button class="btn-contato" onclick="entrarEmContato('inspetor', 'Maria Fernanda')">💬 Enviar Mensagem</button>
+                </div>
+
+                <!-- Manutenção -->
+                <div class="contato-card">
+                    <div class="contato-header">
+                        <div class="contato-avatar">🛠️</div>
+                        <div class="contato-info">
+                            <div class="contato-nome">Roberto Lima Souza</div>
+                            <span class="contato-funcao">Manutenção</span>
+                        </div>
+                    </div>
+                    <div class="contato-detalhes">
+                        <div class="contato-item">
+                            📧 <a href="mailto:roberto.souza@firjansenai.com.br">roberto.souza@firjansenai.com.br</a>
+                        </div>
+                        <div class="contato-item">
+                            📱 <a href="tel:+552199999-3333">(21) 99999-3333</a>
+                        </div>
+                        <div class="contato-item">
+                            💬 Ramal: 2147
+                        </div>
+                    </div>
+                    <button class="btn-contato" onclick="entrarEmContato('manutencao', 'Roberto Lima')">💬 Enviar Mensagem</button>
+                </div>
+
+                <!-- Suporte Geral -->
+                <div class="contato-card">
+                    <div class="contato-header">
+                        <div class="contato-avatar">🆘</div>
+                        <div class="contato-info">
+                            <div class="contato-nome">Central de Suporte</div>
+                            <span class="contato-funcao">Atendimento Geral</span>
+                        </div>
+                    </div>
+                    <div class="contato-detalhes">
+                        <div class="contato-item">
+                            📧 <a href="mailto:suporte@firjansenai.com.br">suporte@firjansenai.com.br</a>
+                        </div>
+                        <div class="contato-item">
+                            📱 <a href="tel:08000231231">0800-023-1231</a>
+                        </div>
+                        <div class="contato-item">
+                            💬 Ramal: 2100
+                        </div>
+                    </div>
+                    <button class="btn-contato" onclick="entrarEmContato('suporte', 'Central')">💬 Abrir Chamado</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="container">
+        <footer>
+            <p>&copy; 2025 FIRJAN SENAI - Sistema de Reservas | Perfil: Instrutor</p>
+        </footer>
+    </div>
+
+    <script>
+        function novaReserva() {
+            alert('Abrindo formulário de nova reserva...');
+        }
+
+        function verReservas() {
+            alert('Navegando para página de reservas...');
+        }
+
+        function abrirChamado() {
+            alert('Abrindo formulário de chamado...');
+        }
+
+        function verCalendario() {
+            alert('Abrindo calendário completo...');
+        }
+
+        function verDetalhes(id) {
+            alert(`Visualizando detalhes da reserva #${id}`);
+        }
+
+        function editarReserva(id) {
+            alert(`Editando reserva #${id}`);
+        }
+
+        function cancelarReserva(id) {
+            if (confirm(`Deseja realmente cancelar a reserva #${id}?`)) {
+                alert('Reserva cancelada com sucesso!');
+            }
+        }
+
+        function logout() {
+            if (confirm('Deseja realmente sair do sistema?')) {
+                alert('Saindo do sistema...');
+            }
+        }
+
+        function entrarEmContato(tipo, nome) {
+            alert(`Iniciando conversa com ${nome} (${tipo})...\n\nEm breve você será redirecionado para o chat interno.`);
+        }
+    </script>
+</body>
+</html>
