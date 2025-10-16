@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios - Sistema de Reservas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Menu de Navegação */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-radius: 30px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .header-content h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        /* Filtros de Período */
+        .period-filter {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .period-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn-period {
+            padding: 12px 24px;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-period:hover, .btn-period.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .custom-period {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9em;
+            color: #555;
+            font-weight: 600;
+        }
+
+        input, select {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-generate {
+            padding: 12px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-generate:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* Cards de Métricas */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .metric-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+        }
+
+        .metric-card.blue::before {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .metric-card.green::before {
+            background: linear-gradient(90deg, #28a745, #20c997);
+        }
+
+        .metric-card.orange::before {
+            background: linear-gradient(90deg, #ffc107, #ff6b6b);
+        }
+
+        .metric-card.red::before {
+            background: linear-gradient(90deg, #dc3545, #c82333);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .metric-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .metric-label {
+            color: #888;
+            font-size: 1em;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .metric-change {
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .metric-change.positive {
+            color: #28a745;
+        }
+
+        .metric-change.negative {
+            color: #dc3545;
+        }
+
+        /* Seções de Gráficos */
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .chart-title {
+            font-size: 1.5em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .btn-export {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-export:hover {
+            background: #5568d3;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Tabelas de Ranking */
+        .ranking-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .ranking-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .ranking-title {
+            font-size: 1.8em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .ranking-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+        }
+
+        .ranking-table {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .ranking-table h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: transform 0.3s;
+        }
+
+        .ranking-item:hover {
+            transform: translateX(5px);
+        }
+
+        .ranking-position {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+            min-width: 40px;
+        }
+
+        .ranking-position.gold {
+            color: #ffd700;
+        }
+
+        .ranking-position.silver {
+            color: #c0c0c0;
+        }
+
+        .ranking-position.bronze {
+            color: #cd7f32;
+        }
+
+        .ranking-info {
+            flex: 1;
+        }
+
+        .ranking-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .ranking-detail {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .ranking-value {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* Botões de Exportação */
+        .export-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .export-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-export-large {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-pdf {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background: #c82333;
+            transform: translateY(-3px);
+        }
+
+        .btn-excel {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-excel:hover {
+            background: #218838;
+            transform: translateY(-3px);
+        }
+
+        .btn-print {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-print:hover {
+            background: #138496;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+
+            .period-buttons {
+                flex-direction: column;
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .ranking-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .export-buttons {
+                flex-direction: column;
+            }
+
+            .btn-export-large {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu de Navegação -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                🏢 Sistema de Reservas
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="reservas.html">📅 Reservas</a></li>
+                <li><a href="ambientes.html">🏛️ Ambientes</a></li>
+                <li><a href="usuarios.html">👥 Usuários</a></li>
+                <li><a href="relatorios.html" class="active">📊 Relatórios</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span><strong>Admin</strong></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>📊 Relatórios e Estatísticas</h1>
+                <p class="subtitle">Análise completa do uso de ambientes e reservas</p>
+            </div>
+        </header>
+
+        <!-- Filtro de Período -->
+        <div class="period-filter">
+            <h3 style="margin-bottom: 20px; color: #333;">📅 Selecione o Período</h3>
+            <div class="period-buttons">
+                <button class="btn-period active" onclick="setPeriod('today')">Hoje</button>
+                <button class="btn-period" onclick="setPeriod('week')">Esta Semana</button>
+                <button class="btn-period" onclick="setPeriod('month')">Este Mês</button>
+                <button class="btn-period" onclick="setPeriod('year')">Este Ano</button>
+                <button class="btn-period" onclick="setPeriod('custom')">Período Personalizado</button>
+            </div>
+            <div class="custom-period" id="customPeriod" style="display: none;">
+                <div class="form-group">
+                    <label>Data Início:</label>
+                    <input type="date" id="dataInicio">
+                </div>
+                <div class="form-group">
+                    <label>Data Fim:</label>
+                    <input type="date" id="dataFim">
+                </div>
+                <button class="btn-generate" onclick="generateReport()">🔍 Gerar Relatório</button>
+            </div>
+        </div>
+
+        <!-- Cards de Métricas -->
+        <div class="metrics-grid">
+            <div class="metric-card blue">
+                <div class="metric-icon">📅</div>
+                <div class="metric-label">Total de Reservas</div>
+                <div class="metric-value">1,247</div>
+                <div class="metric-change positive">↑ 18% vs mês anterior</div>
+            </div>
+            <div class="metric-card green">
+                <div class="metric-icon">✅</div>
+                <div class="metric-label">Taxa de Ocupação</div>
+                <div class="metric-value">78%</div>
+                <div class="metric-change positive">↑ 5% vs mês anterior</div>
+            </div>
+            <div class="metric-card orange">
+                <div class="metric-icon">⏱️</div>
+                <div class="metric-label">Tempo Médio de Uso</div>
+                <div class="metric-value">2.5h</div>
+                <div class="metric-change negative">↓ 10% vs mês anterior</div>
+            </div>
+            <div class="metric-card red">
+                <div class="metric-icon">❌</div>
+                <div class="metric-label">Cancelamentos</div>
+                <div class="metric-value">48</div>
+                <div class="metric-change negative">↑ 3% vs mês anterior</div>
+            </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Reservas por Mês</h3>
+                    <button class="btn-export" onclick="exportChart('reservas')">📥 Exportar</button>
+                </div>
+                <div class="chart-placeholder">
+                    📈 Gráfico de Linhas - Reservas Mensais
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Ambientes Mais Utilizados</h3>
+                    <button class="btn-export" onclick="exportChart('ambientes')">📥 Exportar</button>
+                </div>
+                <div class="chart-placeholder">
+                    📊 Gráfico de Barras - Top 5 Ambientes
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Distribuição por Turno</h3>
+                    <button class="btn-export" onclick="exportChart('turnos')">📥 Exportar</button>
+                </div>
+                <div class="chart-placeholder">
+                    🥧 Gráfico de Pizza - Manhã, Tarde, Noite
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h3 class="chart-title">Taxa de Ocupação Semanal</h3>
+                    <button class="btn-export" onclick="exportChart('ocupacao')">📥 Exportar</button>
+                </div>
+                <div class="chart-placeholder">
+                    📈 Gráfico de Área - Ocupação por Dia
+                </div>
+            </div>
+        </div>
+
+        <!-- Rankings -->
+        <div class="ranking-section">
+            <div class="ranking-header">
+                <h2 class="ranking-title">🏆 Rankings do Período</h2>
+            </div>
+            <div class="ranking-grid">
+                <!-- Top Usuários -->
+                <div class="ranking-table">
+                    <h3>👥 Usuários Mais Ativos</h3>
+                    <div class="ranking-item">
+                        <div class="ranking-position gold">🥇</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Carlos Alberto Silva</div>
+                            <div class="ranking-detail">Instrutor - TI</div>
+                        </div>
+                        <div class="ranking-value">145</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="ranking-position silver">🥈</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Ana Paula Santos</div>
+                            <div class="ranking-detail">Instrutor - Admin</div>
+                        </div>
+                        <div class="ranking-value">128</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="ranking-position bronze">🥉</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">João Pedro Oliveira</div>
+                            <div class="ranking-detail">Técnico - TI</div>
+                        </div>
+                        <div class="ranking-value">112</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="ranking-position">4º</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Maria Fernanda Costa</div>
+                            <div class="ranking-detail">Inspetor - Eng</div>
+                        </div>
+                        <div class="ranking-value">95</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="ranking-position">5º</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Roberto Lima Souza</div>
+                            <div class="ranking-detail">Manutenção</div>
+                        </div>
+                        <div class="ranking-value">87</div>
+                    </div>
+                </div>
+
+                <!-- Top Ambientes -->
+                <div class="ranking-table">
+                    <h3>🏛️ Ambientes Mais Reservados</h3>
+                    <div class="ranking-item">
+                        <div class="ranking-position gold">🥇</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Laboratório de Informática</div>
+                            <div class="ranking-detail">Bloco A - 2º Andar</div>
+                        </div>
+                        <div class="ranking-value">289</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="ranking-position silver">🥈</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Auditório Principal</div>
+                            <div class="ranking-detail">Bloco C - Térreo</div>
+                        </div>
+                        <div class="ranking-value">215</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="ranking-position bronze">🥉</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Sala de Reuniões A</div>
+                            <div class="ranking-detail">Bloco B - 1º Andar</div>
+                        </div>
+                        <div class="ranking-value">187</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="ranking-position">4º</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Sala de Treinamento B</div>
+                            <div class="ranking-detail">Bloco A - 3º Andar</div>
+                        </div>
+                        <div class="ranking-value">156</div>
+                    </div>
+                    <div class="ranking-item">
+                        <div class="ranking-position">5º</div>
+                        <div class="ranking-info">
+                            <div class="ranking-name">Laboratório de Ciências</div>
+                            <div class="ranking-detail">Bloco D - 1º Andar</div>
+                        </div>
+                        <div class="ranking-value">143</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Exportação -->
+        <div class="export-section">
+            <h2 class="export-title">📥 Exportar Relatório Completo</h2>
+            <div class="export-buttons">
+                <button class="btn-export-large btn-pdf" onclick="exportPDF()">
+                    <span>📄</span>
+                    <span>Exportar PDF</span>
+                </button>
+                <button class="btn-export-large btn-excel" onclick="exportExcel()">
+                    <span>📊</span>
+                    <span>Exportar Excel</span>
+                </button>
+                <button class="btn-export-large btn-print" onclick="printReport()">
+                    <span>🖨️</span>
+                    <span>Imprimir</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setPeriod(period) {
+            // Remove active de todos os botões
+            document.querySelectorAll('.btn-period').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Adiciona active ao botão clicado
+            event.target.classList.add('active');
+
+            // Mostra/esconde período personalizado
+            const customPeriod = document.getElementById('customPeriod');
+            if (period === 'custom') {
+                customPeriod.style.display = 'grid';
+            } else {
+                customPeriod.style.display = 'none';
+                generateReport();
+            }
+
+            console.log('Período selecionado:', period);
+        }
+
+        function generateReport() {
+            const dataInicio = document.getElementById('dataInicio').value;
+            const dataFim = document.getElementById('dataFim').value;
+
+            if (!dataInicio || !dataFim) {
+                alert('Por favor, selecione as datas de início e fim!');
+                return;
+            }
+
+            console.log('Gerando relatório:', { dataInicio, dataFim });
+            alert('Relatório gerado com sucesso!');
+        }
+
+        function exportChart(chartType) {
+            console.log('Exportando gráfico:', chartType);
+            alert('Gráfico exportado! (Implementar integração)');
+        }
+
+        function exportPDF() {
+            console.log('Exportando relatório em PDF');
+            alert('Relatório PDF gerado! (Implementar integração)');
+        }
+
+        function exportExcel() {
+            console.log('Exportando relatório em Excel');
+            alert('Relatório Excel gerado! (Implementar integração)');
+        }
+
+        function printReport() {
+            console.log('Imprimindo relatório');
+            window.print();
+        }
+    </script>
+</body>
+</html>

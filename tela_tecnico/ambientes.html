@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ambientes - Sistema de Reservas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Menu de Navegação */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-radius: 30px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-content h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .btn-novo {
+            padding: 15px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-novo:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Filtros */
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9em;
+            color: #555;
+            font-weight: 600;
+        }
+
+        select, input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-filtrar {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-filtrar:hover {
+            background: #5568d3;
+        }
+
+        /* Grid de Cards */
+        .ambientes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .ambiente-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+
+        .ambiente-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .card-image {
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5em;
+            position: relative;
+        }
+
+        .card-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .status-disponivel {
+            background: #28a745;
+            color: white;
+        }
+
+        .status-ocupado {
+            background: #dc3545;
+            color: white;
+        }
+
+        .status-manutencao {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .card-content {
+            padding: 25px;
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .card-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .info-icon {
+            font-size: 1.2em;
+            min-width: 25px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            padding-top: 15px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .btn-card {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.9em;
+        }
+
+        .btn-reservar {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-reservar:hover {
+            background: #5568d3;
+        }
+
+        .btn-editar-card {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-editar-card:hover {
+            background: #e0a800;
+        }
+
+        .btn-detalhes {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-detalhes:hover {
+            background: #138496;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+            font-size: 1.5em;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+
+        .btn-close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .btn-salvar {
+            padding: 12px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-salvar:hover {
+            background: #218838;
+        }
+
+        .btn-cancelar {
+            padding: 12px 30px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-cancelar:hover {
+            background: #5a6268;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            .ambientes-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .card-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu de Navegação -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                🏢 Sistema de Reservas
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html">🏠 Home</a></li>
+                <li><a href="reservas.html">📅 Reservas</a></li>
+                <li><a href="ambientes.html" class="active">🏛️ Ambientes</a></li>
+                <li><a href="usuarios.html">👥 Usuários</a></li>
+                <li><a href="relatorios.html">📊 Relatórios</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span><strong>Admin</strong></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>🏛️ Gerenciamento de Ambientes</h1>
+                <p class="subtitle">Controle e configure todos os ambientes disponíveis</p>
+            </div>
+            <button class="btn-novo" onclick="abrirModal()">➕ Novo Ambiente</button>
+        </header>
+
+        <div class="filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="filtroBusca">Buscar por Nome:</label>
+                    <input type="text" id="filtroBusca" placeholder="Digite o nome do ambiente...">
+                </div>
+                <div class="filter-group">
+                    <label for="filtroTipo">Tipo de Ambiente:</label>
+                    <select id="filtroTipo">
+                        <option value="">Todos os tipos</option>
+                        <option value="laboratorio">Laboratório</option>
+                        <option value="sala-reuniao">Sala de Reunião</option>
+                        <option value="auditorio">Auditório</option>
+                        <option value="sala-treinamento">Sala de Treinamento</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filtroStatus">Status:</label>
+                    <select id="filtroStatus">
+                        <option value="">Todos os status</option>
+                        <option value="disponivel">Disponível</option>
+                        <option value="ocupado">Ocupado</option>
+                        <option value="manutencao">Em Manutenção</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filtroCapacidade">Capacidade Mínima:</label>
+                    <input type="number" id="filtroCapacidade" placeholder="Ex: 20" min="0">
+                </div>
+            </div>
+            <button class="btn-filtrar" onclick="filtrarAmbientes()">🔍 Filtrar Ambientes</button>
+        </div>
+
+        <div class="ambientes-grid">
+            <!-- Ambiente 1 -->
+            <div class="ambiente-card">
+                <div class="card-image">
+                    💻
+                    <span class="card-status status-disponivel">Disponível</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Laboratório de Informática</h3>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <span>Capacidade: 40 pessoas</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📍</span>
+                            <span>Localização: Bloco A - 2º Andar</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🖥️</span>
+                            <span>40 Computadores, Projetor, Wi-Fi</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-card btn-reservar" onclick="reservarAmbiente(1)">📅 Reservar</button>
+                        <button class="btn-card btn-editar-card" onclick="editarAmbiente(1)">✏️ Editar</button>
+                        <button class="btn-card btn-detalhes" onclick="verDetalhes(1)">👁️ Ver</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ambiente 2 -->
+            <div class="ambiente-card">
+                <div class="card-image">
+                    🏢
+                    <span class="card-status status-ocupado">Ocupado</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Sala de Reuniões A</h3>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <span>Capacidade: 20 pessoas</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📍</span>
+                            <span>Localização: Bloco B - 1º Andar</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🖥️</span>
+                            <span>TV 65", Videoconferência, Quadro</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-card btn-reservar" onclick="reservarAmbiente(2)">📅 Reservar</button>
+                        <button class="btn-card btn-editar-card" onclick="editarAmbiente(2)">✏️ Editar</button>
+                        <button class="btn-card btn-detalhes" onclick="verDetalhes(2)">👁️ Ver</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ambiente 3 -->
+            <div class="ambiente-card">
+                <div class="card-image">
+                    🎭
+                    <span class="card-status status-disponivel">Disponível</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Auditório Principal</h3>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <span>Capacidade: 200 pessoas</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📍</span>
+                            <span>Localização: Bloco C - Térreo</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🖥️</span>
+                            <span>Sistema de Som, Projetor 4K, Palco</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-card btn-reservar" onclick="reservarAmbiente(3)">📅 Reservar</button>
+                        <button class="btn-card btn-editar-card" onclick="editarAmbiente(3)">✏️ Editar</button>
+                        <button class="btn-card btn-detalhes" onclick="verDetalhes(3)">👁️ Ver</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ambiente 4 -->
+            <div class="ambiente-card">
+                <div class="card-image">
+                    📚
+                    <span class="card-status status-disponivel">Disponível</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Sala de Treinamento B</h3>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <span>Capacidade: 30 pessoas</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📍</span>
+                            <span>Localização: Bloco A - 3º Andar</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🖥️</span>
+                            <span>Projetor, Quadro Branco, Wi-Fi</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-card btn-reservar" onclick="reservarAmbiente(4)">📅 Reservar</button>
+                        <button class="btn-card btn-editar-card" onclick="editarAmbiente(4)">✏️ Editar</button>
+                        <button class="btn-card btn-detalhes" onclick="verDetalhes(4)">👁️ Ver</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ambiente 5 -->
+            <div class="ambiente-card">
+                <div class="card-image">
+                    🔧
+                    <span class="card-status status-manutencao">Manutenção</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Sala de Reuniões C</h3>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <span>Capacidade: 15 pessoas</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📍</span>
+                            <span>Localização: Bloco B - 2º Andar</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🖥️</span>
+                            <span>TV 55", Mesa de Reunião, Ar Split</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-card btn-reservar" onclick="reservarAmbiente(5)" disabled style="opacity: 0.5; cursor: not-allowed;">📅 Reservar</button>
+                        <button class="btn-card btn-editar-card" onclick="editarAmbiente(5)">✏️ Editar</button>
+                        <button class="btn-card btn-detalhes" onclick="verDetalhes(5)">👁️ Ver</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ambiente 6 -->
+            <div class="ambiente-card">
+                <div class="card-image">
+                    🔬
+                    <span class="card-status status-disponivel">Disponível</span>
+                </div>
+                <div class="card-content">
+                    <h3 class="card-title">Laboratório de Ciências</h3>
+                    <div class="card-info">
+                        <div class="info-item">
+                            <span class="info-icon">👥</span>
+                            <span>Capacidade: 25 pessoas</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">📍</span>
+                            <span>Localização: Bloco D - 1º Andar</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-icon">🖥️</span>
+                            <span>Equipamentos Lab, Bancadas, EPI's</span>
+                        </div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-card btn-reservar" onclick="reservarAmbiente(6)">📅 Reservar</button>
+                        <button class="btn-card btn-editar-card" onclick="editarAmbiente(6)">✏️ Editar</button>
+                        <button class="btn-card btn-detalhes" onclick="verDetalhes(6)">👁️ Ver</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Cadastro/Edição -->
+    <div class="modal" id="modalAmbiente">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Novo Ambiente</h2>
+                <button class="btn-close" onclick="fecharModal()">&times;</button>
+            </div>
+            <form id="formAmbiente" onsubmit="salvarAmbiente(event)">
+                <div class="form-group">
+                    <label for="nome">Nome do Ambiente <span class="required">*</span></label>
+                    <input type="text" id="nome" name="nome" required placeholder="Ex: Laboratório de Informática">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipo">Tipo <span class="required">*</span></label>
+                        <select id="tipo" name="tipo" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="laboratorio">Laboratório</option>
+                            <option value="sala-reuniao">Sala de Reunião</option>
+                            <option value="auditorio">Auditório</option>
+                            <option value="sala-treinamento">Sala de Treinamento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="capacidade">Capacidade <span class="required">*</span></label>
+                        <input type="number" id="capacidade" name="capacidade" required placeholder="Número de pessoas" min="1">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bloco">Bloco <span class="required">*</span></label>
+                        <input type="text" id="bloco" name="bloco" required placeholder="Ex: Bloco A">
+                    </div>
+                    <div class="form-group">
+                        <label for="andar">Andar <span class="required">*</span></label>
+                        <input type="text" id="andar" name="andar" required placeholder="Ex: 2º Andar">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="status">Status <span class="required">*</span></label>
+                    <select id="status" name="status" required>
+                        <option value="disponivel">Disponível</option>
+                        <option value="ocupado">Ocupado</option>
+                        <option value="manutencao">Em Manutenção</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Recursos Disponíveis</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rec-projetor" name="recursos" value="projetor">
+                            <label for="rec-projetor">Projetor</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rec-wifi" name="recursos" value="wifi">
+                            <label for="rec-wifi">Wi-Fi</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rec-ar" name="recursos" value="ar-condicionado">
+                            <label for="rec-ar">Ar Condicionado</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rec-quadro" name="recursos" value="quadro">
+                            <label for="rec-quadro">Quadro Branco</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rec-tv" name="recursos" value="tv">
+                            <label for="rec-tv">TV/Monitor</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="rec-computadores" name="recursos" value="computadores">
+                            <label for="rec-computadores">Computadores</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="descricao">Descrição/Observações</label>
+                    <textarea id="descricao" name="descricao" placeholder="Informações adicionais sobre o ambiente..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-salvar">💾 Salvar Ambiente</button>
+                </div>
+            </form>
+        

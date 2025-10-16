@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Reservas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Menu de Navegação */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-radius: 30px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Container Principal */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header Dashboard */
+        .dashboard-header {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .dashboard-header h1 {
+            color: #667eea;
+            font-size: 3em;
+            margin-bottom: 15px;
+            animation: fadeInDown 0.8s;
+        }
+
+        .dashboard-header p {
+            color: #666;
+            font-size: 1.3em;
+        }
+
+        /* Cards de Estatísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .stat-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            animation: bounce 2s infinite;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .stat-change {
+            font-size: 0.95em;
+            color: #28a745;
+            font-weight: 600;
+        }
+
+        .stat-change.negative {
+            color: #dc3545;
+        }
+
+        /* Ações Rápidas */
+        .quick-actions {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+        }
+
+        .quick-actions h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .action-btn {
+            padding: 30px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .action-btn:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .action-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .action-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .action-desc {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        /* Atividades Recentes */
+        .recent-activity {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .recent-activity h2 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: background 0.3s;
+        }
+
+        .activity-item:hover {
+            background: #e9ecef;
+        }
+
+        .activity-icon {
+            font-size: 2.5em;
+            min-width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+
+        .activity-desc {
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .activity-time {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        /* Animações */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+
+            .nav-menu {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .dashboard-header h1 {
+                font-size: 2em;
+            }
+
+            .stat-value {
+                font-size: 2.5em;
+            }
+
+            .actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu de Navegação -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                🏢 Sistema de Reservas
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">🏠 Home</a></li>
+                <li><a href="reservas.html">📅 Reservas</a></li>
+                <li><a href="ambientes.html">🏛️ Ambientes</a></li>
+                <li><a href="usuarios.html">👥 Usuários</a></li>
+                <li><a href="relatorios.html">📊 Relatórios</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span><strong>Admin</strong></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Container Principal -->
+    <div class="container">
+        <!-- Header do Dashboard -->
+        <div class="dashboard-header">
+            <h1>🎯 Bem-vindo ao Sistema de Reservas</h1>
+            <p>Gerencie suas reservas, ambientes e usuários de forma eficiente</p>
+        </div>
+
+        <!-- Cards de Estatísticas -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-label">Reservas Hoje</div>
+                <div class="stat-value">24</div>
+                <div class="stat-change">↑ 12% esta semana</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-label">Reservas Pendentes</div>
+                <div class="stat-value">8</div>
+                <div class="stat-change negative">↓ 3% esta semana</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏛️</div>
+                <div class="stat-label">Ambientes Disponíveis</div>
+                <div class="stat-value">15</div>
+                <div class="stat-change">100% operacional</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-label">Usuários Ativos</div>
+                <div class="stat-value">87</div>
+                <div class="stat-change">↑ 5% este mês</div>
+            </div>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="quick-actions">
+            <h2>⚡ Ações Rápidas</h2>
+            <div class="actions-grid">
+                <a href="reservas.html" class="action-btn">
+                    <div class="action-icon">➕</div>
+                    <div class="action-title">Nova Reserva</div>
+                    <div class="action-desc">Criar uma nova reserva de ambiente</div>
+                </a>
+                <a href="ambientes.html" class="action-btn">
+                    <div class="action-icon">🏛️</div>
+                    <div class="action-title">Ver Ambientes</div>
+                    <div class="action-desc">Consultar disponibilidade de salas</div>
+                </a>
+                <a href="usuarios.html" class="action-btn">
+                    <div class="action-icon">👤</div>
+                    <div class="action-title">Adicionar Usuário</div>
+                    <div class="action-desc">Cadastrar novo usuário no sistema</div>
+                </a>
+                <a href="relatorios.html" class="action-btn">
+                    <div class="action-icon">📊</div>
+                    <div class="action-title">Gerar Relatório</div>
+                    <div class="action-desc">Visualizar estatísticas e métricas</div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Atividades Recentes -->
+        <div class="recent-activity">
+            <h2>🕐 Atividades Recentes</h2>
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">✅</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Reserva Confirmada</div>
+                        <div class="activity-desc">Laboratório de Informática - Carlos Silva</div>
+                        <div class="activity-time">Há 15 minutos</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">👤</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Novo Usuário Cadastrado</div>
+                        <div class="activity-desc">Ana Paula Santos - Instrutor</div>
+                        <div class="activity-time">Há 1 hora</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🔧</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Manutenção Concluída</div>
+                        <div class="activity-desc">Sala de Reuniões B - Ar condicionado</div>
+                        <div class="activity-time">Há 2 horas</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">📅</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Reserva Cancelada</div>
+                        <div class="activity-desc">Auditório Principal - João Pedro</div>
+                        <div class="activity-time">Há 3 horas</div>
+                    </div>
+                </div>
+                <div class="activity-item">
+                    <div class="activity-icon">🏛️</div>
+                    <div class="activity-content">
+                        <div class="activity-title">Novo Ambiente Adicionado</div>
+                        <div class="activity-desc">Sala de Treinamento C</div>
+                        <div class="activity-time">Há 5 horas</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
