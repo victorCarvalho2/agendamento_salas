@@ -1,0 +1,875 @@
+.<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservas - Sistema de Reservas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Menu de Navegação */
+        nav {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            color: #333;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-menu a:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-menu a.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-radius: 30px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Header */
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .header-content h1 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .btn-novo {
+            padding: 15px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        .btn-novo:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        /* Filtros */
+        .filters {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 0.9em;
+            color: #555;
+            font-weight: 600;
+        }
+
+        select, input {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-filtrar {
+            padding: 12px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-filtrar:hover {
+            background: #5568d3;
+        }
+
+        /* Estatísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #888;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Tabela */
+        .table-container {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:hover {
+            background: #f5f5f5;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-confirmada {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-pendente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-cancelada {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-em-uso {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* Ações */
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-action {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+
+        .btn-ver {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-ver:hover {
+            background: #138496;
+        }
+
+        .btn-editar {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-editar:hover {
+            background: #e0a800;
+        }
+
+        .btn-cancelar-reserva {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-cancelar-reserva:hover {
+            background: #c82333;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+            font-size: 1.5em;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            line-height: 1;
+        }
+
+        .btn-close:hover {
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .required {
+            color: red;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .btn-salvar {
+            padding: 12px 30px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-salvar:hover {
+            background: #218838;
+        }
+
+        .btn-cancelar {
+            padding: 12px 30px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .btn-cancelar:hover {
+            background: #5a6268;
+        }
+
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu de Navegação -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                🏢 Sistema de Reservas
+            </div>
+            <ul class="nav-menu">
+                <li><a href="dashboard.html">🏠 Home</a></li>
+                <li><a href="reservas.html" class="active">📅 Reservas</a></li>
+                <li><a href="ambientes.html">🏛️ Ambientes</a></li>
+                <li><a href="usuarios.html">👥 Usuários</a></li>
+                <li><a href="relatorios.html">📊 Relatórios</a></li>
+            </ul>
+            <div class="user-info">
+                <div class="user-avatar">A</div>
+                <span><strong>Admin</strong></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>📅 Gerenciamento de Reservas</h1>
+                <p class="subtitle">Controle todas as reservas de ambientes</p>
+            </div>
+            <button class="btn-novo" onclick="abrirModal()">➕ Nova Reserva</button>
+        </header>
+
+        <!-- <form method="GET" action="">
+        <div class="filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="filtroAmbiente">Ambiente:</label>
+                    <select id="filtroAmbiente">
+                        <option value="">Todos os ambientes</option>
+                        <option value="1">Laboratório de Informática</option>
+                        <option value="2">Sala de Reuniões A</option>
+                        <option value="3">Auditório Principal</option>
+                        <option value="4">Sala de Treinamento B</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filtroStatus">Status:</label>
+                    <select id="filtroStatus">
+                        <option value="">Todos os status</option>
+                        <option value="confirmada">Confirmada</option>
+                        <option value="pendente">Pendente</option>
+                        <option value="em-uso">Em Uso</option>
+                        <option value="cancelada">Cancelada</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filtroData">Data:</label>
+                    <input type="date" id="filtroData">
+                </div>
+                <div class="filter-group">
+                    <label for="filtroBusca">Buscar por Responsável:</label>
+                    <input type="text" id="filtroBusca" placeholder="Nome do responsável...">
+                </div>
+            </div>
+            <button class="btn-filtrar" onclick="filtrarReservas()">🔍 Filtrar Reservas</button>
+        </div>
+        </form> -->
+        <form method="GET" action="">
+  <div class="filtros-container">
+    <div>
+      <label for="ambiente">Ambiente:</label>
+      <select name="ambiente" id="ambiente">
+        <option value="">Todos os ambientes</option>
+        <option value="Laboratório de Informática">Laboratório de Informática</option>
+        <option value="Sala de Reuniões A">Sala de Reuniões A</option>
+        <option value="Auditório Principal">Auditório Principal</option>
+        <option value="Sala de Treinamento B">Sala de Treinamento B</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="status">Status:</label>
+      <select name="status" id="status">
+        <option value="">Todos os status</option>
+        <option value="Confirmada">Confirmada</option>
+        <option value="Pendente">Pendente</option>
+        <option value="Cancelada">Cancelada</option>
+        <option value="Em Uso">Em Uso</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="data">Data:</label>
+      <input type="date" name="data" id="data">
+    </div>
+
+    <div>
+      <label for="responsavel">Buscar por Responsável:</label>
+      <input type="text" name="responsavel" id="responsavel" placeholder="Nome do responsável...">
+    </div>
+
+    <button type="submit" class="btn-filtrar">
+      🔍 Filtrar Reservas
+    </button>
+  </div>
+</form>
+
+
+
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-label">Confirmadas</div>
+                <div class="stat-value">45</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏰</div>
+                <div class="stat-label">Pendentes</div>
+                <div class="stat-value">8</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🔄</div>
+                <div class="stat-label">Em Uso</div>
+                <div class="stat-value">12</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❌</div>
+                <div class="stat-label">Canceladas</div>
+                <div class="stat-value">3</div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <h2 style="margin-bottom: 20px; color: #333;">Lista de Reservas</h2>
+            <table>
+                <!-- <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ambiente</th>
+                        <th>Data</th>
+                        <th>Horário</th>
+                        <th>Responsável</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead> -->
+                <tbody>
+                    <?php include '../php/lista_reservas.php'; ?>
+                    <!-- <tr>
+                        <td>#R001</td>
+                        <td>Laboratório de Informática</td>
+                        <td>15/10/2025</td>
+                        <td>14:00 - 16:00</td>
+                        <td>Carlos Silva</td>
+                        <td><span class="badge badge-em-uso">Em Uso</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-ver" onclick="verDetalhes(1)">👁️ Ver</button>
+                                <button class="btn-action btn-editar" onclick="editarReserva(1)">✏️ Editar</button>
+                                <button class="btn-action btn-cancelar-reserva" onclick="cancelarReserva(1)">❌ Cancelar</button>
+                            </div>
+                        </td>
+                    </tr> -->
+                    <!-- <tr>
+                        <td>#R002</td>
+                        <td>Sala de Reuniões A</td>
+                        <td>15/10/2025</td>
+                        <td>09:00 - 11:00</td>
+                        <td>Ana Paula Santos</td>
+                        <td><span class="badge badge-confirmada">Confirmada</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-ver" onclick="verDetalhes(2)">👁️ Ver</button>
+                                <button class="btn-action btn-editar" onclick="editarReserva(2)">✏️ Editar</button>
+                                <button class="btn-action btn-cancelar-reserva" onclick="cancelarReserva(2)">❌ Cancelar</button>
+                            </div>
+                        </td>
+                    </tr> -->
+                    <!-- <tr>
+                        <td>#R003</td>
+                        <td>Auditório Principal</td>
+                        <td>16/10/2025</td>
+                        <td>15:00 - 17:00</td>
+                        <td>João Pedro Oliveira</td>
+                        <td><span class="badge badge-pendente">Pendente</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-ver" onclick="verDetalhes(3)">👁️ Ver</button>
+                                <button class="btn-action btn-editar" onclick="editarReserva(3)">✏️ Editar</button>
+                                <button class="btn-action btn-cancelar-reserva" onclick="cancelarReserva(3)">❌ Cancelar</button>
+                            </div>
+                        </td>
+                    </tr> -->
+                    <!-- <tr>
+                        <td>#R004</td>
+                        <td>Sala de Treinamento B</td>
+                        <td>16/10/2025</td>
+                        <td>08:00 - 12:00</td>
+                        <td>Maria Fernanda Costa</td>
+                        <td><span class="badge badge-confirmada">Confirmada</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-ver" onclick="verDetalhes(4)">👁️ Ver</button>
+                                <button class="btn-action btn-editar" onclick="editarReserva(4)">✏️ Editar</button>
+                                <button class="btn-action btn-cancelar-reserva" onclick="cancelarReserva(4)">❌ Cancelar</button>
+                            </div>
+                        </td>
+                    </tr> -->
+                    <!-- <tr>
+                        <td>#R005</td>
+                        <td>Laboratório de Informática</td>
+                        <td>14/10/2025</td>
+                        <td>10:00 - 12:00</td>
+                        <td>Roberto Lima Souza</td>
+                        <td><span class="badge badge-cancelada">Cancelada</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-action btn-ver" onclick="verDetalhes(5)">👁️ Ver</button>
+                            </div>
+                        </td>
+                    </tr> -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal de Nova/Editar Reserva -->
+    <div class="modal" id="modalReserva">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Nova Reserva</h2>
+                <button class="btn-close" onclick="fecharModal()">&times;</button>
+            </div>
+
+            <form id="formReserva" action="../php/salvar_reserva.php" method="post">
+                <div class="form-group">
+                    <label for="ambiente">Ambiente <span class="required">*</span></label>
+                    <select id="ambiente" name="ambiente" required>
+                        <option value="">Selecione um ambiente</option>
+                        <option value="1">Laboratório de Informática</option>
+                        <option value="2">Sala de Reuniões A</option>
+                        <option value="3">Auditório Principal</option>
+                        <option value="4">Sala de Treinamento B</option>
+                        <option value="5">Sala de Reuniões C</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="data">Data <span class="required">*</span></label>
+                        <input type="date" id="data" name="data" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="turno">Turno <span class="required">*</span></label>
+                        <select id="turno" name="turno" required>
+                            <option value="">Selecione o turno</option>
+                            <option value="manha">Manhã (08:00 - 12:00)</option>
+                            <option value="tarde">Tarde (13:00 - 17:00)</option>
+                            <option value="noite">Noite (18:00 - 22:00)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="horaInicio">Hora Início <span class="required">*</span></label>
+                        <input type="time" id="horaInicio" name="horaInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="horaFim">Hora Fim <span class="required">*</span></label>
+                        <input type="time" id="horaFim" name="horaFim" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="responsavel">Responsável <span class="required">*</span></label>
+                    <select id="responsavel" name="responsavel" required>
+                        <option value="">Selecione o responsável</option>
+                        <option value="1">Carlos Silva</option>
+                        <option value="2">Ana Paula Santos</option>
+                        <option value="3">João Pedro Oliveira</option>
+                        <option value="4">Maria Fernanda Costa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="finalidade">Finalidade <span class="required">*</span></label>
+                    <input type="text" id="finalidade" name="finalidade" required placeholder="Ex: Aula de Programação">
+                </div>
+                <div class="form-group">
+                    <label for="observacoes">Observações</label>
+                    <textarea id="observacoes" name="observacoes" placeholder="Informações adicionais sobre a reserva..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                    <button type="submit" class="btn-salvar">💾 Salvar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let modoEdicao = false;
+        let idReservaEditando = null;
+
+        function abrirModal() {
+            modoEdicao = false;
+            idReservaEditando = null;
+            document.getElementById('modalTitulo').textContent = 'Nova Reserva';
+            document.getElementById('formReserva').reset();
+            document.getElementById('modalReserva').classList.add('active');
+        }
+
+        function fecharModal() {
+            document.getElementById('modalReserva').classList.remove('active');
+        }
+
+        function editarReserva(id) {
+            modoEdicao = true;
+            idReservaEditando = id;
+            document.getElementById('modalTitulo').textContent = 'Editar Reserva';
+            
+            // Aqui você carregaria os dados da reserva do banco
+            document.getElementById('ambiente').value = '1';
+            document.getElementById('data').value = '2025-10-15';
+            document.getElementById('turno').value = 'tarde';
+            document.getElementById('horaInicio').value = '14:00';
+            document.getElementById('horaFim').value = '16:00';
+            document.getElementById('responsavel').value = '1';
+            document.getElementById('finalidade').value = 'Aula de Programação';
+            
+            document.getElementById('modalReserva').classList.add('active');
+        }
+
+        function salvarReserva(event) {
+            event.preventDefault();
+            
+            const dados = {
+                ambiente: document.getElementById('ambiente').value,
+                data: document.getElementById('data').value,
+                turno: document.getElementById('turno').value,
+                horaInicio: document.getElementById('horaInicio').value,
+                horaFim: document.getElementById('horaFim').value,
+                responsavel: document.getElementById('responsavel').value,
+                finalidade: document.getElementById('finalidade').value,
+                observacoes: document.getElementById('observacoes').value
+            };
+            
+            console.log(modoEdicao ? 'Editando reserva:' : 'Criando reserva:', dados);
+            alert(modoEdicao ? 'Reserva atualizada com sucesso!' : 'Reserva criada com sucesso!');
+            fecharModal();
+        }
+
+        function verDetalhes(id) {
+            alert('Visualizando detalhes da reserva #' + id);
+        }
+
+        function cancelarReserva(id) {
+            if (confirm('Tem certeza que deseja cancelar esta reserva?')) {
+                console.log('Cancelando reserva:', id);
+                alert('Reserva cancelada com sucesso!');
+            }
+        }
+
+        function filtrarReservas() {
+            const ambiente = document.getElementById('filtroAmbiente').value;
+            const status = document.getElementById('filtroStatus').value;
+            const data = document.getElementById('filtroData').value;
+            const busca = document.getElementById('filtroBusca').value;
+            
+            console.log('Filtrando:', { ambiente, status, data, busca });
+            // alert('Filtros aplicados!');
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('modalReserva').addEventListener('click', function(e) {
+            if (e.target === this) {
+                fecharModal();
+            }
+        });
+    </script>
+</body>
+</html>

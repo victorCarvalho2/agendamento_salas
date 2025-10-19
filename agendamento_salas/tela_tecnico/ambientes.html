@@ -518,8 +518,8 @@
                 🏢 Sistema de Reservas
             </div>
             <ul class="nav-menu">
-                <li><a href="index.html">🏠 Home</a></li>
-                <li><a href="reservas.html">📅 Reservas</a></li>
+                <li><a href="dashboard.html">🏠 Home</a></li>
+                <li><a href="reservas.php">📅 Reservas</a></li>
                 <li><a href="ambientes.html" class="active">🏛️ Ambientes</a></li>
                 <li><a href="usuarios.html">👥 Usuários</a></li>
                 <li><a href="relatorios.html">📊 Relatórios</a></li>
@@ -840,4 +840,65 @@
                     <button type="submit" class="btn-salvar">💾 Salvar Ambiente</button>
                 </div>
             </form>
-        
+           </div>
+    </div>
+<script>
+        // Abre o modal
+        function abrirModal() {
+            document.getElementById('modalNovoAmbiente').classList.add('active');
+            document.body.style.overflow = 'hidden'; // Previne scroll do body
+        }
+
+        // Fecha o modal
+        function fecharModal() {
+            document.getElementById('modalNovoAmbiente').classList.remove('active');
+            document.body.style.overflow = 'auto'; // Restaura scroll do body
+        }
+
+        // Fecha o modal ao clicar fora do conteúdo
+        function fecharModalClick(event) {
+            if (event.target.id === 'modalNovoAmbiente') {
+                fecharModal();
+            }
+        }
+
+        // Fecha o modal com a tecla ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                fecharModal();
+            }
+        });
+
+        // Submit do formulário
+        document.getElementById('ambienteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                nome: document.getElementById('nome').value,
+                tipo: document.getElementById('tipo').value,
+                capacidade: document.getElementById('capacidade').value,
+                localizacao: document.getElementById('localizacao').value,
+                status: document.getElementById('status').value,
+                recursos: document.getElementById('recursos').value,
+                descricao: document.getElementById('descricao').value
+            };
+
+            console.log('Ambiente cadastrado:', formData);
+            
+            alert('✓ Ambiente cadastrado com sucesso!');
+            
+            // Limpar formulário e fechar modal
+            this.reset();
+            fecharModal();
+        });
+
+        // Cancelar
+        function cancelar() {
+            if (confirm('Deseja realmente cancelar? Todas as informações não salvas serão perdidas.')) {
+                document.getElementById('ambienteForm').reset();
+                fecharModal();
+            }
+        }
+    </script>
+</body>
+</html>

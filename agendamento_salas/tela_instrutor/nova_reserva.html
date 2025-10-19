@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nova Reserva - FIRJAN SENAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f5f5f5 100%);
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #003d82 0%, #0056b3 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0, 61, 130, 0.3);
+        }
+
+        .header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .logo-text h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+
+        .btn-voltar {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-voltar:hover {
+            background: white;
+            color: #003d82;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 61, 130, 0.1);
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+            border-bottom: 3px solid #0056b3;
+            padding-bottom: 20px;
+        }
+
+        .form-header h2 {
+            color: #003d82;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #003d82;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #0056b3;
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .recursos-section {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .recursos-section h3 {
+            color: #003d82;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .recursos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .recurso-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recurso-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .recurso-item label {
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(25, 118, 210, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .info-box p {
+            color: #856404;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo">🏭</div>
+                <div class="logo-text">
+                    <h1>Nova Reserva</h1>
+                </div>
+            </div>
+            <a href="dashboard.html" class="btn-voltar">⬅️ Voltar ao Dashboard</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="form-card">
+            <div class="form-header">
+                <h2>➕ Criar Nova Reserva</h2>
+                <p>Preencha os dados abaixo para reservar uma sala ou laboratório</p>
+            </div>
+
+            <div class="info-box">
+                <p>💡 <strong>Dica:</strong> Verifique a disponibilidade antes de confirmar sua reserva. Reservas com menos de 24h de antecedência estão sujeitas à aprovação.</p>
+            </div>
+
+            <form id="formReserva" method="post" action="salvar_reserva.php">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📅 Data da Reserva *</label>
+                        <input type="date" id="data" required>
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ Horário de Início *</label>
+                        <input type="time" id="horaInicio" required>
+                    </div>
+                    <div class="form-group">
+                        <label>⏰ Horário de Término *</label>
+                        <input type="time" id="horaFim" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>🏫 Tipo de Espaço *</label>
+                    <select id="tipoEspaco" required onchange="atualizarSalas()">
+                        <option value="">Selecione o tipo de espaço</option>
+                        <option value="laboratorio">Laboratório de Informática</option>
+                        <option value="sala">Sala de Aula</option>
+                        <option value="auditorio">Auditório</option>
+                        <option value="oficina">Oficina</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>📍 Sala/Laboratório *</label>
+                    <select id="sala" required>
+                        <option value="">Primeiro selecione o tipo de espaço</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>📚 Disciplina/Curso *</label>
+                        <input type="text" id="disciplina" placeholder="Ex: Programação Web" required>
+                    </div>
+                    <div class="form-group">
+                        <label>👥 Número de Alunos *</label>
+                        <input type="number" id="numAlunos" min="1" placeholder="Ex: 25" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>🎯 Turma *</label>
+                    <input type="text" id="turma" placeholder="Ex: Turma A - Manhã" required>
+                </div>
+
+                <div class="recursos-section">
+                    <h3>🛠️ Recursos Necessários</h3>
+                    <div class="recursos-grid">
+                        <div class="recurso-item">
+                            <input type="checkbox" id="projetor" name="recursos">
+                            <label for="projetor">📽️ Projetor</label>
+                        </div>
+                        <div class="recurso-item">
+                            <input type="checkbox" id="computadores" name="recursos">
+                            <label for="computadores">💻 Computadores</label>
+                        </div>
+                        <div class="recurso-item">
+                            <input type="checkbox" id="quadro" name="recursos">
+                            <label for="quadro">📋 Quadro Branco</label>
+                        </div>
+                        <div class="recurso-item">
+                            <input type="checkbox" id="som" name="recursos">
+                            <label for="som">🔊 Sistema de Som</label>
+                        </div>
+                        <div class="recurso-item">
+                            <input type="checkbox" id="ar" name="recursos">
+                            <label for="ar">❄️ Ar Condicionado</label>
+                        </div>
+                        <div class="recurso-item">
+                            <input type="checkbox" id="wifi" name="recursos">
+                            <label for="wifi">📶 WiFi</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>📝 Observações</label>
+                    <textarea id="observacoes" placeholder="Adicione informações extras sobre sua reserva..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="limparFormulario()">🔄 Limpar</button>
+                    <button type="submit" class="btn btn-primary">✅ Confirmar Reserva</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const salasData = {
+            laboratorio: [
+                'Laboratório de Informática A',
+                'Laboratório de Informática B',
+                'Laboratório de Informática C',
+                'Laboratório de Robótica',
+                'Laboratório de Redes'
+            ],
+            sala: [
+                'Sala 101',
+                'Sala 102',
+                'Sala 103',
+                'Sala 201',
+                'Sala 202'
+            ],
+            auditorio: [
+                'Auditório Principal',
+                'Auditório Secundário',
+                'Mini Auditório'
+            ],
+            oficina: [
+                'Oficina de Mecânica',
+                'Oficina de Eletrônica',
+                'Oficina de Automação'
+            ]
+        };
+
+        function atualizarSalas() {
+            const tipoEspaco = document.getElementById('tipoEspaco').value;
+            const salaSelect = document.getElementById('sala');
+            
+            salaSelect.innerHTML = '<option value="">Selecione a sala</option>';
+            
+            if (tipoEspaco && salasData[tipoEspaco]) {
+                salasData[tipoEspaco].forEach(sala => {
+                    const option = document.createElement('option');
+                    option.value = sala;
+                    option.textContent = sala;
+                    salaSelect.appendChild(option);
+                });
+            }
+        }
+
+        function limparFormulario() {
+            if (confirm('Deseja realmente limpar todos os campos?')) {
+                document.getElementById('formReserva').reset();
+            }
+        }
+
+        document.getElementById('formReserva').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const data = document.getElementById('data').value;
+            const horaInicio = document.getElementById('horaInicio').value;
+            const horaFim = document.getElementById('horaFim').value;
+            const sala = document.getElementById('sala').value;
+            const disciplina = document.getElementById('disciplina').value;
+            
+            const recursos = [];
+            document.querySelectorAll('input[name="recursos"]:checked').forEach(el => {
+                recursos.push(el.nextElementSibling.textContent);
+            });
+            
+            alert(`✅ Reserva criada com sucesso!\n\nSala: ${sala}\nData: ${new Date(data).toLocaleDateString('pt-BR')}\nHorário: ${horaInicio} - ${horaFim}\nDisciplina: ${disciplina}\nRecursos: ${recursos.length > 0 ? recursos.join(', ') : 'Nenhum'}`);
+            
+            setTimeout(() => {
+                window.history.back();
+            }, 2000);
+        });
+
+        // Define data mínima como hoje
+        document.getElementById('data').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
